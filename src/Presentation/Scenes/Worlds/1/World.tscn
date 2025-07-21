@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3 uid="uid://um3p5mlk32ei"]
+
+[ext_resource type="Script" uid="uid://dggp8hw73ics" path="res://Scripts/WorldBase/World.cs" id="1_k6ffs"]
+[ext_resource type="PackedScene" uid="uid://dyi7p10oudoc2" path="res://Scenes/Worlds/1/0.tscn" id="2_rxi8o"]
+[ext_resource type="PackedScene" uid="uid://cs30ek80x13c8" path="res://Scenes/Worlds/1/1.tscn" id="3_1le8r"]
+[ext_resource type="PackedScene" uid="uid://cqr7ebmkq5or" path="res://Scenes/Worlds/1/2.tscn" id="4_mv2ao"]
+
+[node name="CityWorld" type="Node2D"]
+script = ExtResource("1_k6ffs")
+MaxFloor = 2
+WorldId = 1
+
+[node name="0" parent="." instance=ExtResource("2_rxi8o")]
+CustomRangeVisible = 0
+
+[node name="1" parent="." instance=ExtResource("3_1le8r")]
+CustomRangeVisible = 0
+
+[node name="2" parent="." instance=ExtResource("4_mv2ao")]
+VisibleFloors = PackedInt32Array()

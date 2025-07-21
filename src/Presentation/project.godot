@@ -1,0 +1,33 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="GodotFloorLevels"
+run/main_scene="res://Scenes/Main.tscn"
+config/features=PackedStringArray("4.5", "C#", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[autoload]
+
+TweenManager="*res://Scripts/TweenManager.cs"
+
+[dotnet]
+
+project/assembly_name="GodotFloorLevelss"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/ChunkManager/plugin.cfg", "res://addons/tile_bit_tools/plugin.cfg")
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

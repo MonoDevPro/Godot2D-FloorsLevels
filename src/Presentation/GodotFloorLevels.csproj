@@ -1,0 +1,16 @@
+<Project Sdk="Godot.NET.Sdk/4.5.0-beta.2">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+    
+  <ItemGroup>
+    <Folder Include="Scripts\" />
+  </ItemGroup>
+    
+  <ItemGroup>
+    <ProjectReference Include="..\Infrastructure\Client.Infrastructure.DependencyInjection\Client.Infrastructure.DependencyInjection.csproj" />
+  </ItemGroup>
+    
+</Project>

@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://dk6urqfx4f1ee"]
+
+[ext_resource type="PackedScene" uid="uid://6bodm1nbjjm8" path="res://Scenes/Map/0/floor.tscn" id="1_xtf6f"]
+[ext_resource type="PackedScene" uid="uid://csdmw056ukhku" path="res://Scenes/Map/1/floor.tscn" id="2_jolfa"]
+[ext_resource type="PackedScene" uid="uid://e827e4f6qj8i" path="res://Scenes/Map/-1/floor.tscn" id="3_03x5g"]
+
+[node name="Map" type="CanvasLayer"]
+
+[node name="-1" parent="." instance=ExtResource("3_03x5g")]
+
+[node name="0" parent="." instance=ExtResource("1_xtf6f")]
+
+[node name="1" parent="." instance=ExtResource("2_jolfa")]
+
+[node name="Sensors" type="Node2D" parent="."]
+
+[node name="Show" type="VisibleOnScreenNotifier2D" parent="Sensors"]
+rect = Rect2(-10, -10, 20, 520)

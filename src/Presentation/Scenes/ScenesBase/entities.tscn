@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://bl1mivio3yvpf"]
+
+[ext_resource type="Script" uid="uid://dlxn3g81xig37" path="res://Scripts/ControlsBase/EntitiesScript.cs" id="1_kxquu"]
+
+[node name="Entities" type="Node2D"]
+y_sort_enabled = true
+script = ExtResource("1_kxquu")
