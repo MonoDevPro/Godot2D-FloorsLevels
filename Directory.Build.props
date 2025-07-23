@@ -1,7 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Project>
+    <!-- build common properties for all projects in the solution -->
   <PropertyGroup>
-    <!-- Place common build properties here -->
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 </Project>
 

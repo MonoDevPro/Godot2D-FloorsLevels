@@ -1,8 +1,9 @@
 using Arch.Core;
+using Client.Domain.ValueObjects;
+using Client.Domain.ValueObjects.Attributes;
+using Client.Domain.ValueObjects.Transforms;
 using Client.Infrastructure.ECS.Components;
-using GodotFloorLevels.Scripts.Infrastructure.ArchECS;
-using GodotFloorLevels.Scripts.Infrastructure.ArchECS.Components;
-using GodotFloorLevels.Scripts.Infrastructure.ArchECS.Entities.Common;
+using Client.Infrastructure.ECS.Entities.Common;
 using Microsoft.Extensions.Logging;
 
 namespace Client.Infrastructure.ECS.Entities;
@@ -33,13 +34,14 @@ public sealed class PlayerECS : EntityECS
         base.RegisterComponents();
         
         // Registra os componentes do jogador local
-        base.AddComponent(new PositionComponent { Position = Vector2I.Zero });
-        base.AddComponent(new SpeedComponent { Speed = 200f });
-        base.AddComponent(new PlayerTag());
+        base.AddComponent(new PositionComponent { Position = new Position() });
+        base.AddComponent(new SpeedComponent { Speed = new Speed() });
+        base.AddComponent(new PlayerInputComponent { Input = new PlayerInput() });
+        base.AddComponent(new CharacterTag());
         
         QueryDescription
-            .WithExclusive<PlayerTag>()
+            .WithExclusive<CharacterTag, PlayerInputComponent>()
             .WithAll<PositionComponent, SpeedComponent>()
-            .WithNone<RemotePlayerTag>();
+            .WithNone<RemotePlayerTag, NpcTag>();
     }
 }

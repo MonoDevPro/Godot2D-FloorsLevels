@@ -1,9 +1,8 @@
-using System;
 using Arch.Core;
-using GodotFloorLevels.Scripts.Infrastructure.ArchECS.Components.Common;
+using Client.Infrastructure.ECS.Components.Common;
 using Microsoft.Extensions.Logging;
 
-namespace GodotFloorLevels.Scripts.Infrastructure.ArchECS.Entities.Common;
+namespace Client.Infrastructure.ECS.Entities.Common;
 
 public abstract class EntityECS : IDisposable
 {
@@ -48,7 +47,7 @@ public abstract class EntityECS : IDisposable
     /// <summary>
     /// Adiciona um component ECS genérico usando construtor padrão
     /// </summary>
-    protected bool AddComponent<T>() where T : IComponent, new()
+    public bool AddComponent<T>() where T : IComponent, new()
     {
         if (HasComponent<T>())
             return false;
@@ -61,7 +60,7 @@ public abstract class EntityECS : IDisposable
     /// <summary>
     /// Adiciona um component ECS genérico (instância fornecida)
     /// </summary>
-    protected bool AddComponent<T>(T component) where T : IComponent
+    public bool AddComponent<T>(T component) where T : IComponent
     {
         if (HasComponent<T>())
             return false;
@@ -74,7 +73,7 @@ public abstract class EntityECS : IDisposable
     /// <summary>
     /// Remove um component ECS da entidade
     /// </summary>
-    protected bool RemoveComponent<T>() where T : IComponent
+    public bool RemoveComponent<T>() where T : IComponent
     {
         if (!HasComponent<T>())
             return false;
@@ -84,7 +83,19 @@ public abstract class EntityECS : IDisposable
         return true;
     }
     
-    protected bool HasComponent<T>() where T : IComponent
+    public void UpdateComponent<T>(T component) where T : IComponent
+    {
+        if (!HasComponent<T>())
+        {
+            Logger?.LogWarning("Tentativa de atualizar component {Name} que não existe na entidade {EntityId}.", typeof(T).Name, Entity.Id);
+            return;
+        }
+
+        Logger?.LogTrace("Atualizando component {Name} na entidade {EntityId}.", typeof(T).Name, Entity.Id);
+        World.Set(Entity, component);
+    }
+    
+    public bool HasComponent<T>() where T : IComponent
     {
         if (World.Has<T>(Entity))
         {
@@ -96,7 +107,7 @@ public abstract class EntityECS : IDisposable
         return false;
     }
     
-    protected bool CheckAlive()
+    public bool CheckAlive()
     {
         if (World.IsAlive(Entity))
             return true;

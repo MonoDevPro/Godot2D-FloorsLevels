@@ -1,4 +1,4 @@
-namespace GodotFloorLevels.Scripts.Domain.Common;
+namespace Client.Domain.Common;
 
 /// <summary>
 /// Marker interface for domain Value Objects.

@@ -1,50 +1,26 @@
 using Client.Domain.Common;
 using Client.Domain.Enums;
-using Client.Domain.ValueObjects;
+using Client.Domain.ValueObjects.Actions;
+using Client.Domain.ValueObjects.Attributes;
+using Client.Domain.ValueObjects.Names;
+using Client.Domain.ValueObjects.States;
+using Client.Domain.ValueObjects.Transforms;
 
 namespace Client.Domain.Entities;
 
-public class Character : DomainEntity
+public class Character(
+    Name name,
+    VocationEnum vocation,
+    GenderEnum genderEnum)
+    : DomainEntity
 {
-    public Sprite Sprite { get; private set; }
-    public Health Health { get; }
-    public Stats Stats   { get; }
-    public Movement Movement { get; }
-    public Attack Attack { get; }
-    
-    public Character(
-        Sprite sprite,
-        Health health,
-        Stats stats,
-        Movement movement,
-        Attack attack)
-    {
-        Sprite  = sprite;
-        Health  = health;
-        Stats   = stats;
-        Movement    = movement;
-        Attack  = attack;
-    }
-    
-    /// <summary>
-    /// Altera a vocação do jogador, se for diferente da atual.
-    /// </summary>
-    public void ChangeVocation(Vocation newVocation)
-    {
-        if (newVocation == Sprite.Vocation)
-            return;
-        
-        Sprite = Sprite with { Vocation = newVocation };
-    }
-
-    /// <summary>
-    /// Altera o gênero do jogador, se for diferente do atual.
-    /// </summary>
-    public void ChangeGender(Gender newGender)
-    {
-        if (newGender == Sprite.Gender)
-            return;
-
-        Sprite = Sprite with { Gender = newGender };
-    }
+    public Name Name { get; private set; } = name;
+    public VocationEnum Vocation { get; private set; } = vocation;
+    public GenderEnum Gender { get; private set; } = genderEnum;
+    public Position Position { get; private set; }
+    public Size Size { get; private set; }
+    public Stats Stats   { get; private set; }
+    public Health Health { get; private set; }
+    public CharacterAction CharacterAction { get; private set; }
+    public GameState GameState { get; private set; }
 }

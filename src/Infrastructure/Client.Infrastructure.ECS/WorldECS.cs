@@ -1,8 +1,7 @@
-using System;
 using Arch.Core;
 using Microsoft.Extensions.Logging;
 
-namespace GodotFloorLevels.Scripts.Infrastructure.ArchECS;
+namespace Client.Infrastructure.ECS;
 
 public sealed class WorldECS : IDisposable
 {

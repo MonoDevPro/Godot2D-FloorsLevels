@@ -1,7 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <MicrosoftExtensionsVersion>8.0.0</MicrosoftExtensionsVersion>
+    <GodotSdkVersion>4.5.0-dev.5</GodotSdkVersion> <!-- Update this version as needed -->
+  </PropertyGroup>
   <ItemGroup>
-    <!-- Centralize your NuGet package versions here -->
+    <PackageVersion Include="GodotSharp" Version="$(GodotSdkVersion)" />
+    <PackageVersion Include="GodotSharpEditor" Version="$(GodotSdkVersion)" />
+    <PackageVersion Include="Godot.SourceGenerators" Version="$(GodotSdkVersion)" />
+    
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="$(MicrosoftExtensionsVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftExtensionsVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
+    <PackageVersion Include="Arch" Version="2.1.0" />
+    <PackageVersion Include="Arch.LowLevel" Version="1.1.5" />
+    <PackageVersion Include="Arch.System" Version="1.1.0" />
+    <PackageVersion Include="Arch.System.SourceGenerator" Version="2.1.0" />
+    <PackageVersion Include="Arch.EventBus" Version="1.0.2" />
   </ItemGroup>
 </Project>
-

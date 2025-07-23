@@ -1,36 +1,21 @@
-using GodotFloorLevels.Scripts.Infrastructure.ArchECS.Components.Common;
+using Client.Domain.Enums;
+using Client.Domain.ValueObjects.Actions;
+using Client.Domain.ValueObjects.Attributes;
+using Client.Domain.ValueObjects.States;
+using Client.Domain.ValueObjects.Transforms;
+using Client.Infrastructure.ECS.Components.Common;
 
 namespace Client.Infrastructure.ECS.Components;
 
 // Tags
-public struct PlayerTag               : IComponent { public Guid Id; }
-public struct RemotePlayerTag         : IComponent { public Guid Id; }
-public struct NpcTag                  : IComponent { public Guid Id; }
+public struct CharacterTag            : IComponent { public Guid Id; }
 
 // Common Components
-public struct PositionComponent       : IComponent { public Vector2I Position; }
-
-public struct VelocityComponent       : IComponent { public Vector2I Velocity; }
-public struct SpeedComponent          : IComponent { public float Speed;    }
-public struct ChunkRequestComponent   : IComponent { public Vector3I Coord; }
-public struct ChunkLoadedTag          : IComponent { }
-
-// Values Objects
-public struct Vector3I(int x, int y, int z)
-{
-    public int X { get; } = x;
-    public int Y { get; } = y;
-    public int Z { get; } = z;
-
-    public override string ToString() => $"({X}, {Y}, {Z})";
-}
-
-public readonly struct Vector2I(int x, int y)
-{
-    public int X { get; } = x;
-    public int Y { get; } = y;
-
-    public override string ToString() => $"({X}, {Y})";
-    
-    public static Vector2I Zero => new Vector2I(0, 0);
-}
+public struct PositionComponent       : IComponent { public Position Position; }
+public struct SizeComponent           : IComponent { public Size Size; }
+public struct SpeedComponent          : IComponent { public Speed Speed; }
+public struct DirectionComponent      : IComponent { public DirectionEnum Direction; }
+public struct HealthComponent         : IComponent { public Health Health; }
+public struct StatsComponent          : IComponent { public Stats Stats; }
+public struct GameStateComponent      : IComponent { public GameState GameState; }
+public struct CharacterActionComponent: IComponent { public CharacterAction CharacterAction; }

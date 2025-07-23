@@ -1,4 +1,4 @@
-namespace GodotFloorLevels.Scripts.Infrastructure.ArchECS.Components.Common;
+namespace Client.Infrastructure.ECS.Components.Common;
 
 /// <summary>
 /// Marca um tipo como Component do ECS.

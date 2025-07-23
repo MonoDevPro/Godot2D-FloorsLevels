@@ -5,4 +5,7 @@ namespace Client.Infrastructure.Godot.Entities;
 
 public partial class RemotePlayerNode : GodotBody2D
 {
+    public override void _Ready()
+    {
+    }
 }

@@ -7,20 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Arch" Version="2.1.0" />
-        <PackageReference Include="Arch.LowLevel" Version="1.1.5" />
-        <PackageReference Include="Arch.System" Version="1.1.0" />
-        <PackageReference Include="Arch.System.SourceGenerator" Version="2.1.0" />
-        <PackageReference Include="Arch.EventBus" Version="1.0.2" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
-        <HintPath>..\..\..\..\..\.nuget\packages\microsoft.extensions.dependencyinjection.abstractions\10.0.0-preview.6.25358.103\lib\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
-      </Reference>
-      <Reference Include="Microsoft.Extensions.Logging.Abstractions">
-        <HintPath>..\..\..\..\..\.nuget\packages\microsoft.extensions.logging.abstractions\10.0.0-preview.6.25358.103\lib\net8.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
-      </Reference>
+        <PackageReference Include="Arch" />
+        <PackageReference Include="Arch.LowLevel" />
+        <PackageReference Include="Arch.System"  />
+        <PackageReference Include="Arch.System.SourceGenerator" />
+        <PackageReference Include="Arch.EventBus" />
+      
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     </ItemGroup>
 
     <ItemGroup>

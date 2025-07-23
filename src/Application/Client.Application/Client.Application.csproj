@@ -10,4 +10,8 @@
       <ProjectReference Include="..\..\Domain\Client.Domain\Client.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Boundary\In\" />
+    </ItemGroup>
+
 </Project>

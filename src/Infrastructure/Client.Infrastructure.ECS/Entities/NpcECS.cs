@@ -1,7 +1,9 @@
 using Arch.Core;
+using Client.Domain.ValueObjects;
+using Client.Domain.ValueObjects.Attributes;
+using Client.Domain.ValueObjects.Transforms;
 using Client.Infrastructure.ECS.Components;
-using GodotFloorLevels.Scripts.Infrastructure.ArchECS;
-using GodotFloorLevels.Scripts.Infrastructure.ArchECS.Entities.Common;
+using Client.Infrastructure.ECS.Entities.Common;
 using Microsoft.Extensions.Logging;
 
 namespace Client.Infrastructure.ECS.Entities;
@@ -32,13 +34,13 @@ public sealed class NpcECS : EntityECS
         base.RegisterComponents();
         
         // Registra os componentes do jogador local
-        base.AddComponent(new PositionComponent { Position = Vector2I.Zero });
-        base.AddComponent(new SpeedComponent { Speed = 100f });
+        base.AddComponent(new PositionComponent { Position = new Position() });
+        base.AddComponent(new SpeedComponent { Speed = new Speed() });
         base.AddComponent(new NpcTag());
         
         QueryDescription
             .WithExclusive<NpcTag>()
             .WithAll<PositionComponent, SpeedComponent>()
-            .WithNone<RemotePlayerTag, PlayerTag >();
+            .WithNone<RemotePlayerTag, CharacterTag >();
     }
 }
