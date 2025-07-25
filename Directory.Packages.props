@@ -2,13 +2,11 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <MicrosoftExtensionsVersion>8.0.0</MicrosoftExtensionsVersion>
-    <GodotSdkVersion>4.5.0-dev.5</GodotSdkVersion> <!-- Update this version as needed -->
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="GodotSharp" Version="$(GodotSdkVersion)" />
-    <PackageVersion Include="GodotSharpEditor" Version="$(GodotSdkVersion)" />
-    <PackageVersion Include="Godot.SourceGenerators" Version="$(GodotSdkVersion)" />
-    
+    <PackageVersion Include="Godot.SourceGenerators" Version="4.5.0-dev.5" />
+    <PackageVersion Include="GodotSharp" Version="4.5.0-dev.5" />
+    <PackageVersion Include="LiteNetLib" Version="1.3.1" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftExtensionsVersion)" />

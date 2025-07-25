@@ -2,20 +2,13 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <Nullable>disable</Nullable>
 
-  <PropertyGroup>
-    <!-- Include the Directory.Build.props file to centralize package versions -->
     <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Infrastructure\Client.Infrastructure.Godot\Client.Infrastructure.Godot.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Scripts\" />
+    <ProjectReference Include="..\Shared\Game.Shared\Game.Shared.csproj" />
   </ItemGroup>
     
 </Project>

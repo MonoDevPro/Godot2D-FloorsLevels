@@ -1,4 +1,3 @@
-using Client.Application.Abstraction.Boundary;
 using Client.Infrastructure.Bootstrap.DependencyInjection;
 using Client.Infrastructure.Godot.Adapters;
 using Godot;

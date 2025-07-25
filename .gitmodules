@@ -1,0 +1,3 @@
+[submodule "ThirdParty/LiteNetLib"]
+	path = ThirdParty/LiteNetLib
+	url = https://github.com/MonoDevPro/LiteNetLib
