@@ -1,5 +1,14 @@
-[gd_scene format=3 uid="uid://ba66ydbsqdckj"]
+[gd_scene load_steps=4 format=3 uid="uid://ba66ydbsqdckj"]
 
-[node name="GameServer" type="Node"]
+[ext_resource type="Script" uid="uid://dbbm08cnvx31l" path="res://ServerBootstrap.cs" id="1_g34q4"]
+[ext_resource type="Script" uid="uid://cyi2eom3svykm" path="res://ServerNetworkNode.cs" id="2_4mbh7"]
+[ext_resource type="Script" uid="uid://k385m7d8flmm" path="res://ServerECSNode.cs" id="3_xo0ul"]
 
-[node name="NetworkManager" type="Node" parent="."]
+[node name="ServerBootstrap" type="Node"]
+script = ExtResource("1_g34q4")
+
+[node name="ServerNetwork" type="Node" parent="."]
+script = ExtResource("2_4mbh7")
+
+[node name="ServerECS" type="Node" parent="."]
+script = ExtResource("3_xo0ul")

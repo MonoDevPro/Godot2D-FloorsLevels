@@ -12,6 +12,20 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="Network\" />
+    <Content Include="SharedResources\GodotDataResource.cs.uid" />
+    <Content Include="SharedResources\Loader\GodotResourceLoader.cs.uid" />
+    <Content Include="SharedResources\ResourcePath.cs.uid" />
+    <Content Include="SharedScripts\ECS\Components\Component.cs.uid" />
+    <Content Include="SharedScripts\ECS\EcsRunner.cs.uid" />
+    <Content Include="SharedScripts\Entities\Data\PlayerResource.cs.uid" />
+    <Content Include="SharedScripts\Entities\GodotCharacter2D.cs.uid" />
+    <Content Include="SharedScripts\Network\Data\Client-&gt;Server\InputMessage.cs.uid" />
+    <Content Include="SharedScripts\Network\Data\ECSComponentRegistry.cs.uid" />
+    <Content Include="SharedScripts\Network\Data\GodotTypeRegistry.cs.uid" />
+    <Content Include="SharedScripts\Network\Data\Server-&gt;Client\StateMessage.cs.uid" />
+    <Content Include="SharedScripts\Network\NetworkManager.cs.uid" />
+    <Content Include="SharedScripts\Network\Receiver\DisposableAction.cs.uid" />
+    <Content Include="SharedScripts\Network\Receiver\NetworkReceiver.cs.uid" />
+    <Content Include="SharedScripts\Network\Sender\NetworkSender.cs.uid" />
   </ItemGroup>
 </Project>

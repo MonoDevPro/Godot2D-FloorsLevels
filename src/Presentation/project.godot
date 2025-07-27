@@ -15,17 +15,13 @@ run/main_scene="res://Scenes/Main.tscn"
 config/features=PackedStringArray("4.5", "C#", "GL Compatibility")
 config/icon="res://icon.svg"
 
-[autoload]
-
-TweenManager="*res://Scripts/TweenManager.cs"
-
 [dotnet]
 
-project/assembly_name="GodotFloorLevelss"
+project/assembly_name="GodotFloorLevels"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/ChunkManager/plugin.cfg", "res://addons/tile_bit_tools/plugin.cfg")
+enabled=PackedStringArray()
 
 [rendering]
 

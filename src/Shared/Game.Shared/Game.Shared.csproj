@@ -2,6 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
+        <EnableDynamicLoading>true</EnableDynamicLoading>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
     </PropertyGroup>
@@ -16,13 +17,9 @@
       <PackageReference Include="Arch.System.SourceGenerator" />
       <PackageReference Include="Arch.EventBus" />
       
-      <PackageReference Include="LiteNetLib" PrivateAssets="all" />
+      <PackageReference Include="LiteNetLib" />
       
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Configs\" />
     </ItemGroup>
 
 </Project>

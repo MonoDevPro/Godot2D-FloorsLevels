@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="GameServer"
-run/main_scene="uid://ba66ydbsqdckj"
+run/main_scene="uid://c16kkq3q44h65"
 config/features=PackedStringArray("4.5", "C#", "GL Compatibility")
 config/icon="res://icon.svg"
 

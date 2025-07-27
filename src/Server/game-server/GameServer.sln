@@ -2,6 +2,8 @@
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServer", "GameServer.csproj", "{C0D262DD-7544-46B7-AD29-AC13BF2B863C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game.Shared", "..\..\Shared\Game.Shared\Game.Shared.csproj", "{A74F2E64-6CE0-436F-90CB-818DE69AF4B6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 	Debug|Any CPU = Debug|Any CPU
@@ -15,5 +17,11 @@ Global
 		{C0D262DD-7544-46B7-AD29-AC13BF2B863C}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
 		{C0D262DD-7544-46B7-AD29-AC13BF2B863C}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
 		{C0D262DD-7544-46B7-AD29-AC13BF2B863C}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+		{A74F2E64-6CE0-436F-90CB-818DE69AF4B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A74F2E64-6CE0-436F-90CB-818DE69AF4B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A74F2E64-6CE0-436F-90CB-818DE69AF4B6}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A74F2E64-6CE0-436F-90CB-818DE69AF4B6}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
+		{A74F2E64-6CE0-436F-90CB-818DE69AF4B6}.ExportRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{A74F2E64-6CE0-436F-90CB-818DE69AF4B6}.ExportRelease|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal
