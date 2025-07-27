@@ -1,0 +1,30 @@
+[gd_scene load_steps=6 format=3 uid="uid://cpp52bjrpwvc7"]
+
+[ext_resource type="PackedScene" uid="uid://dcmfvv4mjc2j6" path="res://SharedScenes/Entities/GodotBody.tscn" id="1_25g7k"]
+[ext_resource type="Script" uid="uid://ufeoo6imriif" path="res://Scripts/Entities/PlayerBody.cs" id="2_kxonq"]
+[ext_resource type="Script" uid="uid://de8lo2kykuta3" path="res://SharedScripts/Entities/Data/PlayerResource.cs" id="2_oyx3t"]
+[ext_resource type="SpriteFrames" uid="uid://tkqyq6a8rx3c" path="res://Resources/Sprites/Mage/Male/spriteframes.tres" id="4_kxonq"]
+
+[sub_resource type="Resource" id="Resource_kxonq"]
+resource_local_to_scene = true
+script = ExtResource("2_oyx3t")
+Id = 0
+Name = "ClientCharacter"
+Description = "Logueii"
+IsClient = true
+IsLocalPlayer = true
+Vocation = 1
+Gender = 1
+Speed = 200.0
+Position = Vector2(0, 0)
+Velocity = Vector2(0, 0)
+metadata/_custom_type_script = "uid://de8lo2kykuta3"
+
+[node name="PlayerBody" instance=ExtResource("1_25g7k")]
+script = ExtResource("2_kxonq")
+PlayerResource = SubResource("Resource_kxonq")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." index="1"]
+sprite_frames = ExtResource("4_kxonq")
+animation = &"idle_south"
+offset = Vector2(16, 0)

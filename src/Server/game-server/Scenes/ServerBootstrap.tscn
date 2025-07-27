@@ -1,0 +1,41 @@
+[gd_scene load_steps=7 format=3 uid="uid://c16kkq3q44h65"]
+
+[ext_resource type="Script" uid="uid://ddk4o83xjn3hj" path="res://Scripts/Root/ServerBootstrap.cs" id="1_ciq4x"]
+[ext_resource type="Script" uid="uid://dq1nfwg8erulu" path="res://Scripts/Root/ECS/ServerECS.cs" id="2_0ypnb"]
+[ext_resource type="Script" uid="uid://cl7fu3uujxjhf" path="res://Scripts/Root/Network/ServerNetwork.cs" id="3_g18wi"]
+[ext_resource type="Script" uid="uid://kil7r5tn7oto" path="res://Scripts/Root/PlayerSpawner.cs" id="4_0ypnb"]
+[ext_resource type="PackedScene" uid="uid://dcmfvv4mjc2j6" path="res://SharedScenes/Entities/GodotBody.tscn" id="5_g18wi"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_g18wi"]
+radius = 32.0
+
+[node name="ServerBootstrap" type="Node"]
+script = ExtResource("1_ciq4x")
+
+[node name="ServerNetwork" type="Node" parent="."]
+script = ExtResource("3_g18wi")
+
+[node name="ServerECS" type="Node" parent="."]
+script = ExtResource("2_0ypnb")
+
+[node name="PlayerSpawner" type="Node2D" parent="."]
+script = ExtResource("4_0ypnb")
+_playerScene = ExtResource("5_g18wi")
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="PlayerSpawner"]
+position = Vector2(200, 200)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerSpawner/CharacterBody2D"]
+shape = SubResource("CircleShape2D_g18wi")
+
+[node name="CharacterBody2D2" type="CharacterBody2D" parent="PlayerSpawner"]
+position = Vector2(100, 100)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerSpawner/CharacterBody2D2"]
+shape = SubResource("CircleShape2D_g18wi")
+
+[node name="CharacterBody2D3" type="CharacterBody2D" parent="PlayerSpawner"]
+position = Vector2(400, 400)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerSpawner/CharacterBody2D3"]
+shape = SubResource("CircleShape2D_g18wi")
