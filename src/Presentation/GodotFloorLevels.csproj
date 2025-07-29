@@ -10,5 +10,15 @@
   <ItemGroup>
     <ProjectReference Include="..\Shared\Game.Shared\Game.Shared.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="SharedScripts\**" />
+    <Compile Remove="SharedResources\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="SharedScripts\**" />
+    <EmbeddedResource Remove="SharedResources\**" />
+  </ItemGroup>
     
 </Project>

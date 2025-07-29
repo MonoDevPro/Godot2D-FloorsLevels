@@ -16,3 +16,5 @@ script = ExtResource("3_pbw6q")
 
 [node name="PlayerSpawner" type="Node2D" parent="."]
 script = ExtResource("4_rgh2o")
+
+[node name="GameMap" type="Node2D" parent="."]

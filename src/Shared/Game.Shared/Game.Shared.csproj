@@ -5,6 +5,7 @@
         <EnableDynamicLoading>true</EnableDynamicLoading>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,6 +21,11 @@
       <PackageReference Include="LiteNetLib" />
       
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Scripts\Network\Seralization\" />
+      <Folder Include="Scripts\Network\Transport\Data\" />
     </ItemGroup>
 
 </Project>

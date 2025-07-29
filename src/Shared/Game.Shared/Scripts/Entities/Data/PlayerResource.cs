@@ -1,4 +1,4 @@
-using Game.Shared.Core.Enums;
+using Game.Shared.Scripts.Core.Enums;
 using Godot;
 
 namespace Game.Shared.Scripts.Entities.Data;

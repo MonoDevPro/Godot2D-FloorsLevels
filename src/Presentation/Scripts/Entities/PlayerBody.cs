@@ -1,5 +1,5 @@
 using Arch.Core;
-using Game.Shared.Config;
+using Game.Shared.Resources;
 using Game.Shared.Scripts.Entities;
 using Game.Shared.Scripts.Entities.Data;
 using Godot;

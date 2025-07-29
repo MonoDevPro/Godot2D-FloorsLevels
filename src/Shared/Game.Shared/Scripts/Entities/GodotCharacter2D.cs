@@ -1,8 +1,8 @@
+using Godot;
 using Arch.Core;
-using Game.Shared.Config;
+using Game.Shared.Resources;
 using Game.Shared.Scripts.ECS.Components;
 using Game.Shared.Scripts.Entities.Data;
-using Godot;
 
 namespace Game.Shared.Scripts.Entities;
 
@@ -40,10 +40,10 @@ public partial class GodotCharacter2D : CharacterBody2D
         
         EntityECS = WorldECS.Create(
             new NetworkedTag { Id = PlayerResource.Id },
-            new PositionComponent { Position = PlayerResource.Position },
-            new VelocityComponent { Velocity = PlayerResource.Velocity },
-            new SceneBodyRefComponent { Node = this },
-            new SpeedComponent { Speed = PlayerResource.Speed }
+            new PositionComponent { Value = PlayerResource.Position },
+            new VelocityComponent { Value = PlayerResource.Velocity },
+            new SceneBodyRefComponent { Value = this },
+            new SpeedComponent { Value = PlayerResource.Speed }
         );
         
         // Adiciona o componente de InputCommandComponent se for o jogador local ou se não for cliente

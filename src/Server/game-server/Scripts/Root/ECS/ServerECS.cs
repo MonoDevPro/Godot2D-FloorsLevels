@@ -1,5 +1,8 @@
+using Arch.Core;
 using Arch.System;
-using Game.Shared.ECS;
+using Game.Shared.Scripts.ECS;
+using Game.Shared.Scripts.ECS.NetworkSync;
+using Game.Shared.Scripts.Network;
 using GameServer.Scripts.Root.ECS.Systems.Network.In;
 using GameServer.Scripts.Root.ECS.Systems.Physics.In;
 using GameServer.Scripts.Root.ECS.Systems.Physics.Out;
@@ -7,6 +10,9 @@ using GameServer.Scripts.Root.ECS.Systems.Process.In;
 using GameServer.Scripts.Root.ECS.Systems.Process.Out;
 using GameServer.Scripts.Root.Network;
 using Godot;
+using ServerInputPhysicsSystem = GameServer.Scripts.Root.ECS.Systems.Physics.ServerInputPhysicsSystem;
+using ServerInputProcessSystem = GameServer.Scripts.Root.ECS.Systems.Process.ServerInputProcessSystem;
+using ServerOutputPhysicsSystem = GameServer.Scripts.Root.ECS.Systems.Physics.ServerOutputPhysicsSystem;
 
 namespace GameServer.Scripts.Root.ECS;
 
@@ -39,15 +45,21 @@ public partial class ServerECS : EcsRunner
         systems.AddRange(
             [
                 // 1) Always poll network first
-                new ServerNetworkPollSystem(World, GetServerNetwork()),
-                // 1) Inputs -> Process
+                new NetworkPollSystem(World, GetServerNetwork()),
+                // 2) Inputs -> Process
                 new ServerInputProcessSystem(World),
-                // 2) Process -> Outputs
-                new ServerOutputProcessSystem(World, GetServerNetwork()),
+                // 3) Process -> Outputs
+                new NetworkPublisherSystem(World, GetServerNetwork())
             ]
         );
         
         base.OnCreateProcessSystems(systems);
+    }
+    
+    private void AddNetworkSendSystem(World world , NetworkManager manager)
+    {
+        // Add systems that send data over the network
+        
     }
 
     /// <inheritdoc/>
@@ -65,8 +77,4 @@ public partial class ServerECS : EcsRunner
         base.OnCreatePhysicsSystems(systems);
     }
 
-    public override void _Process(double delta)
-    {
-        base._Process(delta);
-    }
 }

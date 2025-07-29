@@ -1,9 +1,10 @@
 using Arch.System;
-using Game.Shared.ECS;
+using Game.Shared.Scripts.ECS;
+using Game.Shared.Scripts.ECS.NetworkSync;
 using Godot;
-using GodotFloorLevels.Scripts.Root.ECS.Systems.Physics.In;
-using GodotFloorLevels.Scripts.Root.ECS.Systems.Physics.Out;
-using GodotFloorLevels.Scripts.Root.ECS.Systems.Process.In;
+using GodotFloorLevels.Scripts.Root.ECS.Network;
+using GodotFloorLevels.Scripts.Root.ECS.Systems.Physics;
+using GodotFloorLevels.Scripts.Root.ECS.Systems.Process;
 using GodotFloorLevels.Scripts.Root.Network;
 
 namespace GodotFloorLevels.Scripts.Root.ECS;
@@ -37,9 +38,10 @@ public partial class ClientECS : EcsRunner
         systems.AddRange(
             [
                 // 1) Always poll network first
-                new ClientNetworkPollSystem(World, GetClientNetwork()),
+                NetworkReceiveGroup.AddStateSyncSystem(World, GetClientNetwork()),
                 // 2) Inputs Local -> Process
                 new ClientInputProcessSystem(World, GetClientNetwork()),
+                new NetworkPublisherSystem(World, GetClientNetwork())
             ]
         );
         
@@ -59,10 +61,5 @@ public partial class ClientECS : EcsRunner
         );
         
         base.OnCreatePhysicsSystems(systems);
-    }
-
-    public override void _Process(double delta)
-    {
-        base._Process(delta);
     }
 }

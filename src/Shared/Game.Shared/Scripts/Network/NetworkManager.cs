@@ -1,4 +1,6 @@
-using Game.Shared.Config;
+using Game.Shared.Scripts.Core.Config;
+using Game.Shared.Scripts.Network.Repository;
+using Game.Shared.Scripts.Network.Transport;
 using Godot;
 using LiteNetLib;
 using LiteNetLib.Utils;
@@ -8,8 +10,12 @@ namespace Game.Shared.Scripts.Network;
 public abstract partial class NetworkManager : Node
 {
     public readonly NetManager NetManager;
-    protected readonly EventBasedNetListener _listener;
-    protected readonly NetPacketProcessor _packetProcessor;
+    private readonly EventBasedNetListener _listener;
+    public readonly NetPacketProcessor Processor;
+
+    public virtual NetworkSender Sender { get; }
+    public virtual NetworkReceiver Receiver { get; }
+    public virtual PeerRepositoryRef PeerRepository { get; }
     
     private int MaxStringLength => NetworkConfigurations.MaxStringLength;
     
@@ -17,11 +23,11 @@ public abstract partial class NetworkManager : Node
     {
         _listener = new EventBasedNetListener();
         NetManager = new NetManager(_listener);
-        _packetProcessor = new NetPacketProcessor(MaxStringLength);
-    }
-    
-    public override void _Ready()
-    {
+        Processor = new NetPacketProcessor(MaxStringLength);
+        
+        Sender = new NetworkSender(NetManager, Processor);
+        Receiver = new NetworkReceiver(Processor, _listener);
+        PeerRepository = new PeerRepositoryRef(_listener, NetManager);
     }
     
     public abstract void Start();
@@ -33,9 +39,8 @@ public abstract partial class NetworkManager : Node
         NetManager.Stop();
     }
     
-    // Obsolete: method for polling events, update to use the new ECS system instead.
-    /*public void PollEvents()
+    public void PollEvents()
     {
-        _netManager.PollEvents();
-    }*/
+        NetManager.PollEvents();
+    }
 }

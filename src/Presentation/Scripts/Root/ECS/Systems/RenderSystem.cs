@@ -11,6 +11,6 @@ public partial class RenderSystem(World world) : BaseSystem<World, float>(world)
     [All<NetworkedTag, PositionComponent, SceneBodyRefComponent>]
     private void UpdateVisualSync([Data] in float delta, in PositionComponent pos, in SceneBodyRefComponent sceneBody)
     {
-        sceneBody.Node.GlobalPosition = sceneBody.Node.GlobalPosition.Lerp(pos.Position, delta * 10f);
+        sceneBody.Value.GlobalPosition = sceneBody.Value.GlobalPosition.Lerp(pos.Value, delta * 10f);
     }
 }

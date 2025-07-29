@@ -38,4 +38,23 @@ public sealed partial class ClientBootstrap : Node
         
         GodotInputMap.SetupDefaultInputs();
     }
+    
+    public override void _Process(double delta)
+    {
+        base._Process(delta);
+        
+        // Update Network
+        ClientNetwork.PollEvents();
+        
+        // Update Process systems
+        ClientECS.UpdateProcessSystems((float)delta);
+    }
+    
+    public override void _PhysicsProcess(double delta)
+    {
+        base._PhysicsProcess(delta);
+        
+        // Update Physics systems
+        ClientECS.UpdatePhysicsSystems((float)delta);
+    }
 }

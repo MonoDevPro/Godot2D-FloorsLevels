@@ -1,4 +1,4 @@
-using Game.Shared.Config;
+using Game.Shared.Scripts.Core.Config;
 using Godot;
 using LiteNetLib;
 

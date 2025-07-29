@@ -31,4 +31,23 @@ public sealed partial class ServerBootstrap : Node
         
         GD.Print("[Server] Bootstrap complete");
     }
+
+    public override void _Process(double delta)
+    {
+        base._Process(delta);
+        
+        // Update Network
+        ServerNetwork.PollEvents();
+        
+        // Update Process systems
+        ServerECS.UpdateProcessSystems((float)delta);
+    }
+    
+    public override void _PhysicsProcess(double delta)
+    {
+        base._PhysicsProcess(delta);
+        
+        // Update Physics systems
+        ServerECS.UpdatePhysicsSystems((float)delta);
+    }
 }

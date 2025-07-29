@@ -2,11 +2,13 @@ using Arch.Core;
 using Arch.System;
 using Godot;
 
-namespace Game.Shared.ECS;
+namespace Game.Shared.Scripts.ECS;
 
 public abstract partial class EcsRunner : Node
 {
     public World World { get; private set; }
+    
+    // Network
     
     private readonly Group<float> _processGroup = new("ProcessGroup");
     private readonly Group<float> _physicsGroup = new("PhysicsGroup");
@@ -57,21 +59,19 @@ public abstract partial class EcsRunner : Node
     {
         // Ex: systems.Add(new PhysicsMovementSystem(World));
     }
-
-    public override void _Process(double delta)
+    
+    public virtual void UpdateProcessSystems(float delta)
     {
-        var deltaF = (float)delta;
-        _processGroup.BeforeUpdate(deltaF);
-        _processGroup.Update(deltaF);
-        _processGroup.AfterUpdate(deltaF);
+        _processGroup.BeforeUpdate(delta);
+        _processGroup.Update(delta);
+        _processGroup.AfterUpdate(delta);
     }
     
-    public override void _PhysicsProcess(double delta)
+    public virtual void UpdatePhysicsSystems(float delta)
     {
-        var deltaF = (float)delta;
-        _physicsGroup.BeforeUpdate(deltaF);
-        _physicsGroup.Update(deltaF);
-        _physicsGroup.AfterUpdate(deltaF);
+        _physicsGroup.BeforeUpdate(delta);
+        _physicsGroup.Update(delta);
+        _physicsGroup.AfterUpdate(delta);
     }
 
     public override void _ExitTree()
