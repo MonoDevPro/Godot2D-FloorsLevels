@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://c1jny3acuncw8"]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D"]
+animation = &""
+offset = Vector2(16, 0)

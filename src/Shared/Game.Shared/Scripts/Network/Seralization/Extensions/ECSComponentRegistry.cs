@@ -1,5 +1,6 @@
 using Game.Shared.Scripts.ECS.Components;
-using Game.Shared.Scripts.Network.Transport.Data;
+using Game.Shared.Scripts.Network.Data.Input;
+using Game.Shared.Scripts.Network.Data.Sync;
 using LiteNetLib.Utils;
 
 namespace Game.Shared.Scripts.Network.Seralization.Extensions;
@@ -13,12 +14,6 @@ public static class ECSComponentRegistry
     public static void RegisterECSComponents(NetPacketProcessor packetProcessor)
     {
         ArgumentNullException.ThrowIfNull(packetProcessor);
-
-        packetProcessor.RegisterNestedType<StateMessage>();
-        
-        packetProcessor.RegisterNestedType<NetworkedTag>(
-            (writer, component) => { writer.Put(component.Id); },
-            reader => new NetworkedTag { Id = reader.GetInt() });
     }
 }
 

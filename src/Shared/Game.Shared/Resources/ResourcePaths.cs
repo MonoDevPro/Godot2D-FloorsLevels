@@ -1,3 +1,4 @@
+using Game.Shared.Scripts.Core.Enums;
 using Godot;
 
 namespace Game.Shared.Resources;
@@ -41,6 +42,24 @@ public static class ResourcePaths
     // Diretório de Recursos
     public static class Resources
     {
+        public static ResourcePath<AnimatedSprite2D> AnimatedSprite =
+            new(ResourcesDir + "Sprites/AnimatedSprite2D.tscn");
+        
+        public static ResourcePath<SpriteFrames> GetSpriteFrames(VocationEnum vocation, GenderEnum gender)
+        {
+            return vocation switch
+            {
+                VocationEnum.Mage when gender == GenderEnum.Male => SpriteFramesMageMale,
+                VocationEnum.Mage when gender == GenderEnum.Female => SpriteFramesMageFemale,
+                VocationEnum.Archer when gender == GenderEnum.Male => SpriteFramesArcherMale,
+                VocationEnum.Archer when gender == GenderEnum.Female => SpriteFramesArcherFemale,
+                VocationEnum.None => throw new ArgumentException(
+                    "Vocation cannot be None. Please specify a valid vocation."),
+                _ => throw new ArgumentException(
+                    $"Vocation {vocation}, Gender {gender} is not supported.")
+            };
+        }
+        
         public static readonly ResourcePath<SpriteFrames> SpriteFramesMageMale =
             new(ResourcesDir + "Sprites/Mage/Male/spriteframes.tres");
         public static readonly ResourcePath<SpriteFrames> SpriteFramesMageFemale =

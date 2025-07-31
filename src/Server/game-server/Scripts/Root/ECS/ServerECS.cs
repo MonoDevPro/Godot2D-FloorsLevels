@@ -1,80 +1,61 @@
-using Arch.Core;
 using Arch.System;
 using Game.Shared.Scripts.ECS;
 using Game.Shared.Scripts.ECS.NetworkSync;
 using Game.Shared.Scripts.Network;
-using GameServer.Scripts.Root.ECS.Systems.Network.In;
-using GameServer.Scripts.Root.ECS.Systems.Physics.In;
-using GameServer.Scripts.Root.ECS.Systems.Physics.Out;
-using GameServer.Scripts.Root.ECS.Systems.Process.In;
-using GameServer.Scripts.Root.ECS.Systems.Process.Out;
-using GameServer.Scripts.Root.Network;
 using Godot;
-using ServerInputPhysicsSystem = GameServer.Scripts.Root.ECS.Systems.Physics.ServerInputPhysicsSystem;
-using ServerInputProcessSystem = GameServer.Scripts.Root.ECS.Systems.Process.ServerInputProcessSystem;
-using ServerOutputPhysicsSystem = GameServer.Scripts.Root.ECS.Systems.Physics.ServerOutputPhysicsSystem;
 
 namespace GameServer.Scripts.Root.ECS;
 
+/// <summary>
+/// Implementação específica do ECS para o servidor
+/// Gerencia a integração entre ArchECS e LiteNetLib no lado servidor
+/// </summary>
 public partial class ServerECS : EcsRunner
 {
-    public static ServerECS Instance { get; private set; }
+    [Export] public NodePath NetworkManagerPath { get; set; }
+    private NetworkManager _networkManager;
 
-    /// --> Singleton instance for easy access
-
-    private ServerNetwork GetServerNetwork() => ServerNetwork.Instance;
-    
     public override void _Ready()
     {
-        // impede instâncias duplicadas
-        if (Instance != null && Instance != this)
+        // Primeiro obtém referência do NetworkManager
+        _networkManager = GetNode<NetworkManager>(NetworkManagerPath);
+        if (_networkManager == null)
         {
-            GD.PushWarning("Duplicate ServerECS instance detected. Destroying the new one.");
-            QueueFree();
+            GD.PrintErr("[ServerECS] NetworkManager não encontrado no path especificado!");
             return;
         }
 
-        // define singleton
-        Instance = this;
-
+        // Chama o _Ready base que inicializa todos os sistemas
         base._Ready();
+        
+        GD.Print("[ServerECS] Servidor ECS inicializado com sucesso");
     }
-    
+
     protected override void OnCreateProcessSystems(List<ISystem<float>> systems)
     {
-        systems.AddRange(
-            [
-                // 1) Always poll network first
-                new NetworkPollSystem(World, GetServerNetwork()),
-                // 2) Inputs -> Process
-                new ServerInputProcessSystem(World),
-                // 3) Process -> Outputs
-                new NetworkPublisherSystem(World, GetServerNetwork())
-            ]
-        );
-        
-        base.OnCreateProcessSystems(systems);
-    }
-    
-    private void AddNetworkSendSystem(World world , NetworkManager manager)
-    {
-        // Add systems that send data over the network
-        
+        // Adicione seus sistemas de processo do servidor aqui
+        // Ex: systems.Add(new ServerInputProcessSystem(World, _networkManager));
+        // Ex: systems.Add(new GameLogicSystem(World));
+        GD.Print("[ServerECS] Sistemas de processo do servidor registrados");
     }
 
-    /// <inheritdoc/>
     protected override void OnCreatePhysicsSystems(List<ISystem<float>> systems)
     {
-        systems.AddRange(
-            [
-                // 1) Inputs -> Physics
-                new ServerInputPhysicsSystem(World),
-                // 2) Physics -> Outputs
-                new ServerOutputPhysicsSystem(World),
-            ]
-        );
-        
-        base.OnCreatePhysicsSystems(systems);
+        // Adicione seus sistemas de física do servidor aqui
+        // Ex: systems.Add(new ServerPhysicsSystem(World));
+        // Ex: systems.Add(new CollisionSystem(World));
+        GD.Print("[ServerECS] Sistemas de física do servidor registrados");
     }
 
+    public override void _Process(double delta)
+    {
+        if (_networkManager?.NetManager.IsRunning == true)
+            UpdateProcessSystems((float)delta);
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        if (_networkManager?.NetManager.IsRunning == true)
+            UpdatePhysicsSystems((float)delta);
+    }
 }

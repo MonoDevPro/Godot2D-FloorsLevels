@@ -1,65 +1,65 @@
 using Arch.System;
 using Game.Shared.Scripts.ECS;
-using Game.Shared.Scripts.ECS.NetworkSync;
+using Game.Shared.Scripts.Network;
 using Godot;
-using GodotFloorLevels.Scripts.Root.ECS.Network;
-using GodotFloorLevels.Scripts.Root.ECS.Systems.Physics;
-using GodotFloorLevels.Scripts.Root.ECS.Systems.Process;
-using GodotFloorLevels.Scripts.Root.Network;
 
 namespace GodotFloorLevels.Scripts.Root.ECS;
 
+/// <summary>
+/// Implementação específica do ECS para o cliente
+/// Gerencia a integração entre ArchECS e LiteNetLib no lado cliente
+/// </summary>
 public partial class ClientECS : EcsRunner
 {
-    public static ClientECS Instance { get; private set; }
+    [Export] public NodePath NetworkManagerPath { get; set; }
+    private NetworkManager _networkManager;
 
-    /// --> Singleton instance for easy access
-
-    private ClientNetwork GetClientNetwork() => ClientNetwork.Instance;
-    
     public override void _Ready()
     {
-        // impede instâncias duplicadas
-        if (Instance != null && Instance != this)
+        // Primeiro obtém referência do NetworkManager
+        _networkManager = GetNode<NetworkManager>(NetworkManagerPath);
+        
+        if (_networkManager == null)
         {
-            GD.PrintErr("Duplicate ClientECS instance detected. Destroying the new one.");
-            QueueFree();
+            GD.PrintErr("[ClientECS] NetworkManager não encontrado no path especificado!");
             return;
         }
 
-        // define singleton
-        Instance = this;
-
+        // Chama o _Ready base que inicializa todos os sistemas
         base._Ready();
+        
+        GD.Print("[ClientECS] Cliente ECS inicializado com sucesso");
     }
-    
+
     protected override void OnCreateProcessSystems(List<ISystem<float>> systems)
     {
-        systems.AddRange(
-            [
-                // 1) Always poll network first
-                NetworkReceiveGroup.AddStateSyncSystem(World, GetClientNetwork()),
-                // 2) Inputs Local -> Process
-                new ClientInputProcessSystem(World, GetClientNetwork()),
-                new NetworkPublisherSystem(World, GetClientNetwork())
-            ]
-        );
-        
-        base.OnCreateProcessSystems(systems);
+        // Adicione seus sistemas de processo do cliente aqui
+        // Ex: systems.Add(new InputProcessingSystem(World));
+        // Ex: systems.Add(new UIUpdateSystem(World));
+        GD.Print("[ClientECS] Sistemas de processo do cliente registrados");
     }
 
-    /// <inheritdoc/>
     protected override void OnCreatePhysicsSystems(List<ISystem<float>> systems)
     {
-        systems.AddRange(
-            [
-                // 1) Inputs Process -> Physics Inputs
-                new ClientInputPhysicsSystem(World),
-                // 2) Physics Process -> Network Reconciliation
-                new ClientOutputPhysicsSystem(World),
-            ]
-        );
-        
-        base.OnCreatePhysicsSystems(systems);
+        // Adicione seus sistemas de física do cliente aqui
+        // Ex: systems.Add(new ClientPredictionSystem(World));
+        // Ex: systems.Add(new InterpolationSystem(World));
+        GD.Print("[ClientECS] Sistemas de física do cliente registrados");
+    }
+    
+    public override void _Process(double delta)
+    {
+        if (_networkManager?.NetManager.IsRunning == true)
+        {
+            UpdateProcessSystems((float)delta);
+        }
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        if (_networkManager?.NetManager.IsRunning == true)
+        {
+            UpdatePhysicsSystems((float)delta);
+        }
     }
 }

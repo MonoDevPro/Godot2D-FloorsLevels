@@ -25,8 +25,6 @@ public partial class ServerNetwork: NetworkManager
         Instance = this;
 
         base._Ready();
-
-        
         
         GD.Print("[ServerNetwork] Ready");
     }

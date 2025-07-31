@@ -5,6 +5,8 @@
     <Nullable>disable</Nullable>
 
     <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>

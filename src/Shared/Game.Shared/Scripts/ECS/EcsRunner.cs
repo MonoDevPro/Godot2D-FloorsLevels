@@ -8,8 +8,7 @@ public abstract partial class EcsRunner : Node
 {
     public World World { get; private set; }
     
-    // Network
-    
+    // Network groups - executam em ordem específica
     private readonly Group<float> _processGroup = new("ProcessGroup");
     private readonly Group<float> _physicsGroup = new("PhysicsGroup");
 
@@ -17,33 +16,31 @@ public abstract partial class EcsRunner : Node
     {
         World = World.Create();
         
-        // Cria sistemas de _Process
-        var updateSystems = new List<ISystem<float>>{
-            // Add your common systems here, e.g.:
-            // new ExampleSystem(World),
-            // new AnotherSystem(World),
-            // new YetAnotherSystem(World)
-        };
+        GD.Print("[Arch ECS] Criando mundo ECS...");
+        
+        // Inicializa sistemas de processo
+        var updateSystems = new List<ISystem<float>>();
         OnCreateProcessSystems(updateSystems);
-        _processGroup.Add(updateSystems.ToArray());
-        _processGroup.Initialize();
-        GD.Print($"[Arch ECS] {_processGroup.Name} systems initialized. Count: {updateSystems.Count}.");
+        if (updateSystems.Count > 0)
+        {
+            _processGroup.Add(updateSystems.ToArray());
+            _processGroup.Initialize();
+            GD.Print($"[Arch ECS] {_processGroup.Name} systems initialized. Count: {updateSystems.Count}.");
+        }
 
-        // Cria sistemas de _PhysicsProcess
-        var physicsSystems = new List<ISystem<float>>{
-            // Add your common systems here, e.g.:
-            // new ExampleSystem(World),
-            // new AnotherSystem(World),
-            // new YetAnotherSystem(World)
-        };
+        // Inicializa sistemas de física
+        var physicsSystems = new List<ISystem<float>>();
         OnCreatePhysicsSystems(physicsSystems);
-        _physicsGroup.Add(physicsSystems.ToArray());
-        _physicsGroup.Initialize();
-        GD.Print($"[Arch ECS] {_physicsGroup.Name} systems initialized. Count: {physicsSystems.Count}.");
-
-        GD.Print("[Arch ECS] Mundo ECS criado");
+        if (physicsSystems.Count > 0)
+        {
+            _physicsGroup.Add(physicsSystems.ToArray());
+            _physicsGroup.Initialize();
+            GD.Print($"[Arch ECS] {_physicsGroup.Name} systems initialized. Count: {physicsSystems.Count}.");
+        }
+        
+        GD.Print("[Arch ECS] Mundo ECS criado com sucesso");
     }
-
+    
     /// <summary>
     /// Override para registrar sistemas que rodam em _Process
     /// </summary>
@@ -60,6 +57,10 @@ public abstract partial class EcsRunner : Node
         // Ex: systems.Add(new PhysicsMovementSystem(World));
     }
     
+    /// <summary>
+    /// Atualiza sistemas de processo com pipeline de rede correta
+    /// Ordem: NetworkReceive -> Process -> NetworkPublish
+    /// </summary>
     public virtual void UpdateProcessSystems(float delta)
     {
         _processGroup.BeforeUpdate(delta);
@@ -67,6 +68,9 @@ public abstract partial class EcsRunner : Node
         _processGroup.AfterUpdate(delta);
     }
     
+    /// <summary>
+    /// Atualiza apenas sistemas de física
+    /// </summary>
     public virtual void UpdatePhysicsSystems(float delta)
     {
         _physicsGroup.BeforeUpdate(delta);
@@ -76,9 +80,9 @@ public abstract partial class EcsRunner : Node
 
     public override void _ExitTree()
     {
-        _processGroup.Dispose();
-        _physicsGroup.Dispose();
-        World.Dispose();
-        GD.Print("ECS Runner exited and resources cleaned up.");
+        _processGroup?.Dispose();
+        _physicsGroup?.Dispose();
+        World?.Dispose();
+        GD.Print("[Arch ECS] ECS Runner exited and resources cleaned up.");
     }
 }

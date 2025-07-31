@@ -6,9 +6,12 @@ namespace Game.Shared.Scripts.Network.Repository;
 
 public sealed class PeerRepositoryRef(EventBasedNetListener listener, NetManager netManager)
 {
-    public event Action<int> PeerConnected;
-    public event Action<int, string> PeerDisconnected;
+    public event Action<NetPeer> PeerConnected;
+    public event Action<NetPeer, string> PeerDisconnected;
     public event Action<int, string> ConnectionRequest;
+    
+    public bool TryGetPeerById(int peerId, out NetPeer peer)
+            => netManager.TryGetPeerById(peerId, out  peer);
     
     private int MaxClients => NetworkConfigurations.MaxClients;
 
@@ -36,12 +39,12 @@ public sealed class PeerRepositoryRef(EventBasedNetListener listener, NetManager
     private void OnPeerConnected(NetPeer peer)
     {
         GD.Print($"Client connected: {peer.Address}");
-        PeerConnected?.Invoke(peer.Id);
+        PeerConnected?.Invoke(peer);
     }
     private void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
     {
         GD.Print($"Client disconnected: {peer.Address}, Reason: {disconnectInfo.Reason}");
-        PeerDisconnected?.Invoke(peer.Id, disconnectInfo.Reason.ToString());
+        PeerDisconnected?.Invoke(peer, disconnectInfo.Reason.ToString());
     }
     private void OnConnectionRequest(ConnectionRequest request)
     {

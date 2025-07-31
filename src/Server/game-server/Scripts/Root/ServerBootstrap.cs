@@ -8,6 +8,7 @@ public sealed partial class ServerBootstrap : Node
 {
     public ServerNetwork ServerNetwork { get; private set; }
     public ServerECS ServerECS { get; private set; }
+    public PlayerSpawner PlayerSpawner { get; private set; }
     
     public static ServerBootstrap Instance { get; private set; }  /// --> Singleton instance for easy access
 
@@ -25,6 +26,7 @@ public sealed partial class ServerBootstrap : Node
         
         ServerNetwork = GetNode<ServerNetwork>(nameof(ServerNetwork));
         ServerECS = GetNode<ServerECS>(nameof(ServerECS));
+        PlayerSpawner = GetNode<PlayerSpawner>(nameof(PlayerSpawner));
         
         // Start the ECS and Network systems
         ServerNetwork.Start();
@@ -35,9 +37,6 @@ public sealed partial class ServerBootstrap : Node
     public override void _Process(double delta)
     {
         base._Process(delta);
-        
-        // Update Network
-        ServerNetwork.PollEvents();
         
         // Update Process systems
         ServerECS.UpdateProcessSystems((float)delta);

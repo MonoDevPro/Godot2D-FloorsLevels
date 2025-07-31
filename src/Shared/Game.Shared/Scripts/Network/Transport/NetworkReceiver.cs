@@ -1,75 +1,55 @@
-using Game.Shared.Scripts.Network.Seralization.Extensions;
-using Godot;
+using Arch.Core;
 using LiteNetLib;
 using LiteNetLib.Utils;
+using Godot;
+using System.Collections.Concurrent;
+using Arch.LowLevel;
 
 namespace Game.Shared.Scripts.Network.Transport;
 
 /// <summary>
-/// Recebe pacotes e despacha para o NetPacketProcessor
+/// Responsável por receber e processar mensagens da rede no contexto do ECS
 /// </summary>
-public class NetworkReceiver : IDisposable
+public class NetworkReceiver
 {
     private readonly NetPacketProcessor _processor;
     private readonly EventBasedNetListener _listener;
-    public event Action<int, int> LatencyUpdated;
 
     public NetworkReceiver(NetPacketProcessor processor, EventBasedNetListener listener)
     {
-        _processor = processor;
-        _listener = listener;
-        Initialize();
+        _processor = processor ?? throw new ArgumentNullException(nameof(processor));
+        _listener = listener ?? throw new ArgumentNullException(nameof(listener));
+        
+        // Registra callback para recebimento de mensagens
+        _listener.NetworkReceiveEvent += OnNetworkReceive;
     }
 
-    private void Initialize()
-    {
-        RegisterCustomTypes();
-        RegisterMessages();
-        _listener.NetworkReceiveEvent += OnPacketReceived;
-        _listener.NetworkLatencyUpdateEvent += OnLatencyReceived;
-    }
-
-    protected virtual void RegisterMessages()
-    {
-        // Common messages can be registered here
-    }
-
-    private void OnPacketReceived(NetPeer peer, NetPacketReader reader, byte channel, DeliveryMethod method)
+    private void OnNetworkReceive(NetPeer peer, NetPacketReader reader, byte channel, DeliveryMethod deliveryMethod)
     {
         try
         {
+            // Processa o pacote e enfileira a mensagem
             _processor.ReadAllPackets(reader, peer);
         }
         catch (Exception ex)
         {
-            GD.PrintErr($"[NetworkReceiver] Erro ao ler pacote: {ex}");
+            GD.PrintErr($"[NetworkReceiver] Erro ao processar pacote: {ex.Message}");
         }
-        finally
+    }
+    
+    public IDisposable RegisterMessageHandler<T>(Action<T, NetPeer> callback) where T : struct, INetSerializable
+    {
+        _processor.SubscribeNetSerializable(callback);
+        return new DisposableAction(() =>
         {
-            reader.Recycle();
-        }
+            _processor.RemoveSubscription<T>();
+            GD.Print($"[NetworkReceiver] Unregistered handler for {typeof(T).Name}");
+        });
     }
 
-    private void OnLatencyReceived(NetPeer peer, int latency)
-        => LatencyUpdated?.Invoke(peer.Id, latency);
-
-    private void RegisterCustomTypes()
+    public void Dispose()
     {
-        GodotTypeRegistry.RegisterBasicGodotTypes(_processor);
-        ECSComponentRegistry.RegisterECSComponents(_processor);
-        // outros tipos...
-    }
-
-    public IDisposable SubscribeSerializableMessage<T, TData>(Action<T, TData> onReceive)
-        where T : unmanaged, INetSerializable
-    {
-        _processor.SubscribeNetSerializable(onReceive);
-        return new DisposableAction(() => _processor.RemoveSubscription<T>());
-    }
-
-    public virtual void Dispose()
-    {
-        _listener.NetworkReceiveEvent -= OnPacketReceived;
-        _listener.NetworkLatencyUpdateEvent -= OnLatencyReceived;
+        _listener.NetworkReceiveEvent -= OnNetworkReceive;
+        GD.Print("[NetworkReceiver] Disposed");
     }
 }

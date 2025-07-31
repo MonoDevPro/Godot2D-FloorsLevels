@@ -1,87 +1,128 @@
+using Arch.Core;
+using Game.Shared.Scripts.ECS;
 using Game.Shared.Scripts.Entities;
 using Game.Shared.Scripts.Entities.Data;
-using GameServer.Scripts.Root.ECS;
-using GameServer.Scripts.Root.Network;
+using Game.Shared.Scripts.Network;
+using Game.Shared.Scripts.Network.Data.Join;
+using Game.Shared.Scripts.Network.Data.Left;
+using Game.Shared.Scripts.Network.Transport;
 using Godot;
+using LiteNetLib;
 
 namespace GameServer.Scripts.Root;
 
 public partial class PlayerSpawner : Node2D
 {
-    [Export] private PackedScene _playerScene;
+    [Export] private NodePath _networkPath;
+    [Export] private NodePath _ecsPath;
+
+    private NetworkManager _networkManager;
+    private EcsRunner _ecsRunner;
+    
+    private World World => _ecsRunner.World;
+    private NetworkReceiver Receiver => _networkManager.Receiver;
+    public NetworkSender Sender => _networkManager.Sender;
+    public NetworkManager NetworkManager => _networkManager;
     
     private readonly Dictionary<int, GodotCharacter2D> _players = new();
+    private readonly Dictionary<int, Entity> _entities = new();
     
     public override void _Ready()
     {
-        // This is where you would typically initialize player spawning logic.
-        // For example, you might connect to a network event or set up a timer
-        // to spawn players at regular intervals.
+        _networkManager = GetNode<NetworkManager>(_networkPath);
+        _ecsRunner = GetNode<EcsRunner>(_ecsPath);
+        
+        Receiver.RegisterMessageHandler<JoinRequest>(RequestPlayerJoin);
+        Receiver.RegisterMessageHandler<LeftRequest>(RequestPlayerLeft);
+
+        _networkManager.PeerRepository.PeerDisconnected += OnPeerDisconnected;
         
         GD.Print("[PlayerSpawner] Ready - Player spawning logic can be initialized here.");
-        ServerNetwork.Instance.PeerRepository.PeerConnected += OnPeerConnected;
-        ServerNetwork.Instance.PeerRepository.PeerDisconnected += OnPeerDisconnected;
-        
-        //CreatePlayer(1);
     }
     
-    private GodotCharacter2D CreatePlayer(int id)
+    private void OnPeerDisconnected(NetPeer peer, string reason)
     {
-        // This method would typically retrieve player data from a database or configuration.
-        // For simplicity, we return a new instance of PlayerResource here.
-        var playerData = new PlayerResource
+        // Handle player disconnection
+        GD.Print($"[PlayerSpawner] Player Disconnected with ID: {peer.Id} reason: {reason}");
+        
+        // Optionally, you can send a left request to the server
+        var leftRequest = new LeftRequest();
+        // Remove the player from the scene
+        RequestPlayerLeft(leftRequest, peer);
+    }
+    
+    private void RequestPlayerJoin(JoinRequest packet, NetPeer peer)
+    {
+        // Load Player Data
+        var playerData = new PlayerData
         {
-            Name = $"Player {id}",
-            Id = id,
-            IsClient = false, // Set to true if this is a client player
-            IsLocalPlayer = false,
+            Name = packet.Name,
+            NetId = peer.Id,
         };
+        // Create a new player entity and add it to the scene
+        var player = CreatePlayer(ref playerData);
         
-        // Create a new player entity using the player data
-        /*var playerEntity = _playerScene.Instantiate<GodotCharacter2D>();
+        // Optionally, you can send a confirmation back to the client
+        Sender.Broadcast(ref playerData);
+    }
+    
+    private void RequestPlayerLeft(LeftRequest packet, NetPeer peer)
+    {
+        // Handle player left request
+        if (RemovePlayer(peer.Id))
+        {
+            // Optionally, you can send a confirmation back to the client
+            var leftResponse = new LeftResponse() { NetId = peer.Id};
+            Sender.Broadcast(ref leftResponse);
+
+            GD.Print($"[PlayerSpawner] Player Left with ID: {peer.Id}");
+        }
+    }
+    
+    public bool TryGetPlayerById(int netId, out GodotCharacter2D playerEntity)
+    {
+        if (_players.TryGetValue(netId, out playerEntity) 
+            && World.IsAlive(playerEntity.EntityECS))
+            return true; // Player entity found
         
-        playerEntity.PlayerResource = playerData; // Assign the player data to the entity
-        playerEntity.WorldECS = ServerECS.Instance.World;*/
+        GD.PrintErr($"[PlayerSpawner] No player entity found for ID: {netId}");
+        return false; // Player entity not found
+    }
+    public bool TryGetEntityById(int entityId, out Entity entity)
+    {
+        if (_entities.TryGetValue(entityId, out entity) 
+            && World.IsAlive(entity))
+            return true; // entity found
         
-        //return character;
-        var playerEntity = GodotCharacter2D.Create(playerData, ServerECS.Instance.World);
+        GD.PrintErr($"[PlayerSpawner] No entity found for ID: {entityId}");
+        return false; // entity not found
+    }
+    
+    private GodotCharacter2D CreatePlayer(ref PlayerData data)
+    {
+        var player = GodotCharacter2D.Create(ref data);
+        var entity = player.CreateEntityECS(World);
         
-        _players[id] = playerEntity; // Store the player entity by ID
-        GD.Print($"[PlayerSpawner] Created player entity for ID: {id} with data: {playerData}");
+        _players[data.NetId] = player; // Store the player entity by ID
+        _entities[data.NetId] = entity; // Store the ECS entity by ID
         
-        AddChild(playerEntity);
+        AddChild(player);
+        GD.Print($"[PlayerSpawner] Created player with data: {data}");
         
-        return playerEntity;
+        return player;
     }
     
     private bool RemovePlayer(int id)
     {
-        if (_players.TryGetValue(id, out var playerEntity))
+        if (!_players.Remove(id, out var player))
         {
-            playerEntity.QueueFree(); // Remove the player entity from the scene
-            _players.Remove(id); // Remove from the dictionary
-            GD.Print($"[PlayerSpawner] Removed player entity for ID: {id}");
-            return true;
+            GD.PrintErr($"[PlayerSpawner] No player entity found for ID: {id}");
+            return false; // Player entity not found
         }
+        _entities.Remove(id); // Remove from the entities dictionary
+        player.QueueFree(); // Remove the player entity from the scene
         
-        GD.PrintErr($"[PlayerSpawner] No player entity found for ID: {id}");
-        return false;
-    }
-    
-    private void OnPeerConnected(int peerId)
-    {
-        GD.Print($"[PlayerSpawner] Peer connected: {peerId}");
-        
-        CreatePlayer(peerId);
-    }
-    
-    private void OnPeerDisconnected(int peerId, string reason)
-    {
-        GD.Print($"[PlayerSpawner] Peer disconnected: {peerId}, Reason: {reason}");
-        
-        if (!RemovePlayer(peerId))
-        {
-            GD.PrintErr($"[PlayerSpawner] Failed to remove player entity for peer ID: {peerId}");
-        }
+        GD.Print($"[PlayerSpawner] Removed player entity for ID: {id}");
+        return true;
     }
 }

@@ -24,7 +24,7 @@ public class NetworkSender(
     }
     
     public void Broadcast<T>(ref T packet, DeliveryMethod method = DeliveryMethod.ReliableOrdered) 
-        where T : unmanaged, INetSerializable
+        where T : struct, INetSerializable
     {
         packetProcessor.WriteNetSerializable<T>(_writer, ref packet);
         netManager.SendToAll(_writer, method);
@@ -32,7 +32,7 @@ public class NetworkSender(
     }
     
     public void BroadcastArray<T>(T[] arrayPacket, DeliveryMethod method = DeliveryMethod.ReliableOrdered) 
-        where T : unmanaged, INetSerializable
+        where T : struct, INetSerializable
     {
         GD.Print($"Broadcasting array of {typeof(T).Name} with length {arrayPacket.Length}.");
         
@@ -41,6 +41,23 @@ public class NetworkSender(
         
         netManager.SendToAll(_writer, method);
         _writer.Reset(); // Clear the writer to reuse it
+    }
+    
+    public void BroadcastData(ReadOnlySpan<byte> data, DeliveryMethod method = DeliveryMethod.ReliableOrdered)
+    {
+        if (data.IsEmpty)
+        {
+            GD.PrintErr("[NetworkSender] Attempted to broadcast empty data.");
+            return;
+        }
+        
+        netManager.SendToAll(data, method);
+    }
+    
+    public void SerializeData<T>(NetDataWriter writer, ref T packet)
+        where T : struct, INetSerializable
+    {
+        packetProcessor.WriteNetSerializable<T>(_writer, ref packet);
     }
     
     protected virtual void OnSendError(int peerId)

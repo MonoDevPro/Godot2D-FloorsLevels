@@ -1,0 +1,18 @@
+[gd_scene load_steps=5 format=3 uid="uid://kf48naxixwwo"]
+
+[ext_resource type="Script" path="res://Scripts/Root/GameBootstrap.cs" id="1_kldst"]
+[ext_resource type="Script" uid="uid://pe1fkkck25ix" path="res://Scripts/Root/Network/ClientNetwork.cs" id="2_b2bpf"]
+[ext_resource type="Script" uid="uid://gxk6rgc5gfwp" path="res://Scripts/Root/ECS/ClientECS.cs" id="3_7lihs"]
+[ext_resource type="Script" uid="uid://dlred6gccenah" path="res://Scripts/Root/PlayerSpawner.cs" id="4_fgofq"]
+
+[node name="GameBootstrap" type="Node"]
+script = ExtResource("1_kldst")
+
+[node name="ClientNetwork" type="Node" parent="."]
+script = ExtResource("2_b2bpf")
+
+[node name="ClientECS" type="Node" parent="."]
+script = ExtResource("3_7lihs")
+
+[node name="PlayerSpawner" type="Node2D" parent="."]
+script = ExtResource("4_fgofq")

@@ -25,7 +25,6 @@
 
     <ItemGroup>
       <Folder Include="Scripts\Network\Seralization\" />
-      <Folder Include="Scripts\Network\Transport\Data\" />
     </ItemGroup>
 
 </Project>

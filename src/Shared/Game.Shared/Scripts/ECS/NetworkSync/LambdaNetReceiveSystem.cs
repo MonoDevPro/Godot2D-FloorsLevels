@@ -1,52 +1,42 @@
 using Arch.Core;
-using Arch.LowLevel;
 using Arch.System;
 using Game.Shared.Scripts.Network;
-using LiteNetLib.Utils;
+using Game.Shared.Scripts.Network.Transport;
 
 namespace Game.Shared.Scripts.ECS.NetworkSync;
 
-public sealed class LambdaNetReceiveSystem<T> : BaseSystem<World, float>
-    where T : unmanaged, INetSerializable
+/// <summary>
+/// Sistema que processa mensagens recebidas da rede e aplica ao ECS
+/// Executa PRIMEIRO na pipeline para garantir que dados de rede sejam processados antes da lógica
+/// </summary>
+public abstract class LambdaNetReceiveSystem(World world, NetworkManager networkManager) : BaseSystem<World, float>(world)
 {
-    private UnsafeQueue<(T Message, int PeerId)> _buffer;
-    private readonly Action<World, T, int> _handler;
-    private readonly int _maxMessagesPerFrame;
-    private readonly IDisposable _subscription;
-
-    public LambdaNetReceiveSystem(
-        World world,
-        NetworkManager net,
-        Action<World, T, int> handler,
-        int maxMessagesPerFrame = 128,
-        int initialBufferCapacity = 64)
-        : base(world)
+    private readonly List<IDisposable> _subscriptions = [];
+    
+    public override void Initialize()
     {
-        _handler = handler;
-        _maxMessagesPerFrame = maxMessagesPerFrame;
-        _buffer = new UnsafeQueue<(T, int)>(initialBufferCapacity);
-
-        _subscription = net.Receiver.SubscribeSerializableMessage<T, int>(OnReceive);
+        _subscriptions.AddRange(RegisterNetworkHandlers(networkManager.Receiver));
     }
 
-    private void OnReceive(T msg, int peerId)
+    public override void Update(in float t)
     {
-        _buffer.Enqueue((msg, peerId));
+        // PollEvents() é o método principal que dispara os callbacks (como o OnPlayerInputReceived)
+        // O primeiro parâmetro (listener) é nulo porque estamos usando o NetPacketProcessor
+        // que atua como nosso listener para pacotes de dados.
+        networkManager.PollEvents();
     }
-
-    public override void Update(in float delta)
-    {
-        int count = Math.Min(_buffer.Count, _maxMessagesPerFrame);
-        for (int i = 0; i < count; i++)
-        {
-            (T msg, int peer) = ref _buffer.Dequeue();
-            _handler(World, msg, peer);
-        }
-    }
-
+    
+    protected abstract List<IDisposable> RegisterNetworkHandlers(NetworkReceiver receiver);
+    
     public override void Dispose()
     {
-        _subscription.Dispose();
-        _buffer.Dispose();
+        // Desregistra todos os handlers
+        foreach (var subscription in _subscriptions)
+        {
+            subscription.Dispose();
+        }
+        _subscriptions.Clear();
+        
+        base.Dispose();
     }
 }
